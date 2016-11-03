@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         // ListView에 아이템 추가
         m_Adapter.add("채팅방1");
-
+        m_Adapter.add("채팅방2");
     }
 
     // 아이템 터치 이벤트
@@ -41,9 +41,14 @@ public class MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
             // 이벤트 발생 시 해당 아이템 위치의 텍스트를 출력
             Toast.makeText(getApplicationContext(), m_Adapter.getItem(arg2), Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(MainActivity.this, chat1.class);
-            startActivity(intent);
+            if (m_Adapter.getItem(arg2)=="채팅방1") {
+                Intent intent = new Intent(MainActivity.this, chat1.class);
+                startActivity(intent);
+            }
+            else if (m_Adapter.getItem(arg2)=="채팅방2") {
+                Intent intent = new Intent(MainActivity.this, location.class);
+                startActivity(intent);
+            }
         }
     };
 
