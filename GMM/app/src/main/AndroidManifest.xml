@@ -31,6 +31,21 @@
         </activity>
         <activity android:name=".ChatActivity"></activity>
         <activity android:name=".location"></activity>
+
+        <service
+            android:name=".service.FirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".service.FirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB2-H9y_1gmkjp3aF8YyuRBPBmUvZUIjO8"/>

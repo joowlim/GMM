@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "272103955053",
+    "firebase_url": "https://chomoim-messenger.firebaseio.com",
+    "project_id": "chomoim-messenger",
+    "storage_bucket": "chomoim-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272103955053:android:53d1728f7cbf2aa3",
+        "android_client_info": {
+          "package_name": "com.cs408.chomsg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272103955053-2skm0hr9861phm1bfecg6jh6dkik6bus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRuS5xjqj096L1LB40ESvMg0QAOsxw_To"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272103955053:android:e2132cb120aa3af4",
+        "android_client_info": {
+          "package_name": "com.example.limjoowon.gmm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272103955053-2skm0hr9861phm1bfecg6jh6dkik6bus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRuS5xjqj096L1LB40ESvMg0QAOsxw_To"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
