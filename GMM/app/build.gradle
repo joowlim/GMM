@@ -10,7 +10,14 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
+
+    dexOptions {
+        jumboMode true
+        javaMaxHeapSize "4g"
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -26,4 +33,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.google.android.gms:play-services:9.2.0'
     compile 'com.android.support:design:24.0.0'
+    compile 'com.android.support:multidex:1.0.0'
 }
