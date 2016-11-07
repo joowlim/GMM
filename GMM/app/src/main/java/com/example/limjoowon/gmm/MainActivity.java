@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             // 이벤트 발생 시 해당 아이템 위치의 텍스트를 출력
             Toast.makeText(getApplicationContext(), m_Adapter.getItem(arg2), Toast.LENGTH_SHORT).show();
             if (m_Adapter.getItem(arg2)=="채팅방1") {
-                Intent intent = new Intent(MainActivity.this, chat1.class);
+                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                 startActivity(intent);
             }
             else if (m_Adapter.getItem(arg2)=="채팅방2") {

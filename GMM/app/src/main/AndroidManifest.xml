@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".chat1"></activity>
+        <activity android:name=".ChatActivity"></activity>
         <activity android:name=".location"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
