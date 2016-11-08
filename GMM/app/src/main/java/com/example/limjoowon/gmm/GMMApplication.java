@@ -3,7 +3,9 @@ package com.example.limjoowon.gmm;
 import android.app.Application;
 import android.content.Context;
 
+import com.example.limjoowon.gmm.config.MsgServerConfig;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * 공용으로 사용되는 어플리케이션 클래스.
@@ -28,6 +30,7 @@ public class GMMApplication extends Application {
         super.onCreate();
         mContext = getApplicationContext();
         mToken = FirebaseInstanceId.getInstance().getToken();
+        FirebaseMessaging.getInstance().subscribeToTopic(MsgServerConfig.CHAT_ROOM_ID);
     }
 
     public static Context getContext() {
