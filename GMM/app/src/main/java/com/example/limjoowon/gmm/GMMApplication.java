@@ -25,12 +25,16 @@ public class GMMApplication extends Application {
      */
     private static Context mContext;
 
+    private static boolean mChatRoomInForeground;
+
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
         mToken = FirebaseInstanceId.getInstance().getToken();
         FirebaseMessaging.getInstance().subscribeToTopic(MsgServerConfig.CHAT_ROOM_ID);
+
+        mChatRoomInForeground = false;
     }
 
     public static Context getContext() {
@@ -43,5 +47,15 @@ public class GMMApplication extends Application {
 
     public static void setToken(String token) {
         mToken = token;
+    }
+
+    /* 채팅창이 ForeGround에 있는지 반환한다. */
+    public static boolean isChatRoomInForeground() {
+        return mChatRoomInForeground;
+    }
+
+    /* 채팅창이 ForeGround에 있는지 설정한다. */
+    public static void setChatRoomInForeground(boolean foreground) {
+        mChatRoomInForeground = foreground;
     }
 }

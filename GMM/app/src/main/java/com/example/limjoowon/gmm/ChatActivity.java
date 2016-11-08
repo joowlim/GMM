@@ -3,6 +3,7 @@ package com.example.limjoowon.gmm;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -32,12 +33,29 @@ public class ChatActivity extends AppCompatActivity {
     private Button mSendBtn;
     private ArrayAdapter<String> mAdapter;
     private ListView mListView;
+    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(mBroadcastStringAction);
         initUI();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GMMApplication.setChatRoomInForeground(true);
+        registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        GMMApplication.setChatRoomInForeground(false);
+        unregisterReceiver(mReceiver);
+        super.onPause();
     }
 
     /**
@@ -120,19 +138,22 @@ public class ChatActivity extends AppCompatActivity {
         messenger.sendTextMessage(MsgServerConfig.CHAT_ROOM_ID, msg);
     }
 
+    /**
+     * FirebaseMessage Service로 부터 메시지를 받는 BroadCastReceiver
+     */
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String msg = intent.getStringExtra("msgTxt");
-            String senderId = intent.getStringExtra("sender_id");
+            String msg = intent.getStringExtra(MsgServerConfig.KEY_MSG);
+            String senderId = intent.getStringExtra(MsgServerConfig.KEY_SENDER);
 
             //ListView 업데이트
-            //final String newMsg = generateMsg(senderId, msg);
+            final String newMsg = generateMsg(senderId, msg);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    //mAdapter.add(newMsg);
-                    //mAdapter.notifyDataSetChanged();
+                    mAdapter.add(newMsg);
+                    mAdapter.notifyDataSetChanged();
                 }
             });
         }

@@ -2,6 +2,7 @@ package com.example.limjoowon.gmm.service;
 
 import android.util.Log;
 
+import com.example.limjoowon.gmm.GMMApplication;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -13,8 +14,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 public class FirebaseInstanceIDService  extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
-        // Get updated InstanceID token.
         String token = FirebaseInstanceId.getInstance().getToken();
-        Log.d("TAG", "Refreshed token: " + token);
+        GMMApplication.setToken(token);
     }
 }
