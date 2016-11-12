@@ -3,6 +3,7 @@ package com.example.limjoowon.gmm.module;
 import android.content.SharedPreferences;
 
 import com.example.limjoowon.gmm.GMMApplication;
+import com.example.limjoowon.gmm.config.MsgServerConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,7 +53,7 @@ public class LocalChatDataManager {
      */
     public boolean saveNewMessage(String chatRoomId, String sender, String msg) {
         //TODO: 지금은 하드코딩. 추후에 실제 chatRoomId로 변경
-        chatRoomId = "CHAT_ROOM_ID";
+        chatRoomId = MsgServerConfig.CHAT_ROOM_ID;
 
         try {
             SharedPreferences pref = GMMApplication.getContext().getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -85,7 +86,7 @@ public class LocalChatDataManager {
      */
     public JSONArray getAllMessage(String chatRoomId) {
         //TODO: 지금은 하드코딩. 추후에 실제 chatRoomId로 변경
-        chatRoomId = "CHAT_ROOM_ID";
+        chatRoomId = MsgServerConfig.CHAT_ROOM_ID;
 
         SharedPreferences pref = GMMApplication.getContext().getSharedPreferences(SP_NAME, MODE_PRIVATE);
         String str = pref.getString(chatRoomId, "");

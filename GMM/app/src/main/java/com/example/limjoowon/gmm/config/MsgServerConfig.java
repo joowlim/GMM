@@ -23,10 +23,15 @@ public class MsgServerConfig {
     /**
      * JSON 에서 메시지를 분류하는 Key값
      */
-    public static String KEY_MSG = "";
+    public static String KEY_MSG = "msg";
 
     /**
      * JSON 에서 Sender를 분류하는 Key값
      */
-    public static String KEY_SENDER = "";
+    public static String KEY_SENDER = "sender_id";
+
+    /**
+     * TODO: 하드코딩 CHAT_ROOM_ID 추후 제거
+     */
+    public static String CHAT_ROOM_ID = "chat_room_id";
 }
