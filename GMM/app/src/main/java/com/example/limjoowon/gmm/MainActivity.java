@@ -102,10 +102,13 @@ public class MainActivity extends AppCompatActivity{
      */
     private void initializeUI() {
         mNewChatBtn = (FloatingActionButton) findViewById(R.id.floating_btn);
+
+        // 새채팅방생성으로 이동
         mNewChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUserToServer();
+                Intent intent = new Intent(MainActivity.this, CreateRoomActivity.class);
+                startActivity(intent);
             }
         });
     }
