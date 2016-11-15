@@ -2,6 +2,7 @@ package com.example.limjoowon.gmm;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,21 +11,30 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.limjoowon.gmm.module.GMMServerCommunicator;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+
 public class MainActivity extends AppCompatActivity{
     private ListView m_ListView;
     private ArrayAdapter<String> m_Adapter;
     private GoogleApiClient mGoogleApiClient;
+    private FloatingActionButton mNewChatBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 사용자 정보를 서버에 등록.
+        registerUserToServer();
+
+        // UI 초기화
+        initializeUI();
 
         Button signout = (Button) findViewById(R.id.logout);
 
@@ -85,5 +95,26 @@ public class MainActivity extends AppCompatActivity{
                 .build();
         mGoogleApiClient.connect();
         super.onStart();
+    }
+
+    /**
+     * UI를 초기화 한다.
+     */
+    private void initializeUI() {
+        mNewChatBtn = (FloatingActionButton) findViewById(R.id.floating_btn);
+        mNewChatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerUserToServer();
+            }
+        });
+    }
+
+    /**
+     * 사용자 정보를 서버에 등록한다.
+     */
+    private void registerUserToServer() {
+        GMMServerCommunicator communicator = new GMMServerCommunicator();
+        communicator.registerUserToServer(null);
     }
 }
