@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.limjoowon.gmm.config.UserConfig;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -111,13 +113,14 @@ public class Login extends FragmentActivity implements GoogleApiClient.OnConnect
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
+            //인증 정보 얻어지면 UserConfig 객체에 사용자 정보 설정
+            setUserInfo(acct);
            // mStatusTextView.setText(acct.getDisplayName());
            // updateUI(true);
             Intent intent = new Intent(Login.this, MainActivity.class);
             startActivity(intent);
             finish();
-
-
+        } else {
         }
     }
     // [END handleSignInResult]
@@ -159,6 +162,17 @@ public class Login extends FragmentActivity implements GoogleApiClient.OnConnect
                 signIn();
                 break;
         }
+    }
+
+    /**
+     * 구글 인증 정보를 통해 다른 클래스에서도 사용될 사용자 정보를 설정한다.
+     */
+    private void setUserInfo(GoogleSignInAccount account) {
+        UserConfig userConfig = UserConfig.getInstance();
+        userConfig.initialize(
+                account.getEmail().split("@")[0],
+                account.getDisplayName(),
+                account.getPhotoUrl());
     }
 
 }
