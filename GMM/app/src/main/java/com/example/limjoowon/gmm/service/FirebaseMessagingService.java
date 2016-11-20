@@ -37,8 +37,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             JSONObject obj = new JSONObject(jsonStr);
             msg = obj.getString(MsgServerConfig.KEY_MSG);
             senderId = obj.getString(MsgServerConfig.KEY_SENDER);
+
+            // msg, senderId 등이 null 이거나 empty string 이면 잘못된 메시지로 판단하고 return
+            if (msg == null || msg.isEmpty() || senderId == null || senderId.isEmpty()) return;
             // 내가 보냈던 메시지면 그냥 return
             if (GMMApplication.getToken().equals(senderId)) return;
+
         } catch(Exception e) {
         }
         // 로컬에 저장

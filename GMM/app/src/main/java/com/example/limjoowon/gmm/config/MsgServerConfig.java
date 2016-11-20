@@ -36,6 +36,11 @@ public class MsgServerConfig {
     public static String CHAT_ROOM_ID = "chat_room_id";
 
     /**
+     * 메시지 전송 API
+     */
+    public static String SEND_MESSAGE_API = "/message";
+
+    /**
      * 사용자 등록 API
      */
     public static String REGISTER_USER_API = "/user/register";
@@ -49,6 +54,13 @@ public class MsgServerConfig {
      * 채팅방 생성 API
      */
     public static String CREATE_CHAT_ROOM_API = "/chat/create";
+
+    /**
+     * 메시지 전송 URI를 얻어온다.
+     */
+    public static String getSendMessageAPIUri() {
+        return HOST_URI + SEND_MESSAGE_API;
+    }
 
     /**
      * 사용자 등록 API URI를 얻어온다.

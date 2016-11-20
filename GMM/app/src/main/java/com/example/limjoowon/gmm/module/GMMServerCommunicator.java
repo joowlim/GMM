@@ -54,6 +54,20 @@ public class GMMServerCommunicator {
     }
 
     /**
+     * 사용자를 검색한다.
+     * /user/search API 호출
+     */
+    public void searchUser(String userId, Callback callback) {
+        OkHttpClient client = new OkHttpClient();
+        String url = MsgServerConfig.getSearchUserAPIUri() + "?user_id=" + userId;
+        Request request = new Request.Builder().url(url).build();
+        if (callback == null) {
+            callback = onMessageCallback;
+        }
+        client.newCall(request).enqueue(callback);
+    }
+
+    /**
      * 메시지 전송 결과에 대한 Callback
      */
     private Callback onMessageCallback = new Callback() {

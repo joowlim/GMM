@@ -28,7 +28,7 @@ public class GMMMessenger {
     public void sendTextMessage(String chatRoomId, String msg) {
         try {
             OkHttpClient client = new OkHttpClient();
-            String url = MsgServerConfig.HOST_URI;
+            String url = MsgServerConfig.getSendMessageAPIUri();
             JSONObject obj = new JSONObject();
             obj.put(MsgServerConfig.KEY_MSG, msg);
             // TODO : 추후 google ID로 SENDER를 분류해야 하지 않을까?

@@ -63,6 +63,7 @@ public class ChatActivity extends AppCompatActivity {
      */
     private void initUI() {
         setTitle("채팅방1");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mEditText = (EditText) findViewById(R.id.msg_edit_text);
         mSendBtn = (Button) findViewById(R.id.msg_send_btn);
         mListView = (ListView) findViewById(R.id.msg_list);
@@ -158,4 +159,10 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
     };
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
 }
