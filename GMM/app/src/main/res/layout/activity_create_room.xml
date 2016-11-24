@@ -16,6 +16,8 @@
             android:layout_weight="3"
             android:layout_height="match_parent" />
         <EditText
+            android:id="@+id/chat_room_name_edit"
+            android:hint="새 채팅방"
             android:layout_width="0dp"
             android:layout_weight="5"
             android:layout_height="match_parent" />
@@ -60,6 +62,7 @@
         android:orientation="horizontal">
         <EditText
             android:id="@+id/user_id_edit"
+            android:hint="사용자 Google ID 입력"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="match_parent" />

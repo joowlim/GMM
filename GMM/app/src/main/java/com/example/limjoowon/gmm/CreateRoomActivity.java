@@ -9,11 +9,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.limjoowon.gmm.config.UserConfig;
 import com.example.limjoowon.gmm.module.GMMServerCommunicator;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,14 +30,17 @@ public class CreateRoomActivity extends AppCompatActivity {
 
     private Button mSearchUserBtn;
     private Button mCreateRoomDoneBtn;
-    private EditText mUserIdEdit;
+    private EditText mUserIdEdit, mChatRoomNameEdit;
     private int mTotalUser = 0;
     private TextView mUser1,mUser2;
+    private List<String> mUserList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeUI();
+        mUserList = new ArrayList<String>();
+        mUserList.add(UserConfig.getInstance().getUserId());
     }
 
     //UI 초기화
@@ -49,6 +55,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         mCreateRoomDoneBtn.setOnClickListener(onDoneBtnClick);
 
         mUserIdEdit = (EditText) findViewById(R.id.user_id_edit);
+        mChatRoomNameEdit = (EditText) findViewById(R.id.chat_room_name_edit);
         mUser1 = (TextView) findViewById(R.id.user1);
         mUser2 = (TextView) findViewById(R.id.user2);
     }
@@ -64,13 +71,42 @@ public class CreateRoomActivity extends AppCompatActivity {
         }
     };
 
-    // 완료 버튼이 눌리었을 때 채팅방으로 이동
+    // 완료 버튼이 눌리면 새 채팅방 생성 API 호출
     private View.OnClickListener onDoneBtnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(CreateRoomActivity.this, ChatActivity.class);
-            startActivity(intent);
-            finish();
+            createNewChatRoom();
+        }
+    };
+
+    // 새 채팅방 생성 API를 호출한다.
+    private void createNewChatRoom() {
+        if (mUserList.size() == 1) return;
+        GMMServerCommunicator communicator = new GMMServerCommunicator();
+        String chatRoomName = mChatRoomNameEdit.getText().toString();
+        if (chatRoomName == null || chatRoomName.isEmpty()) {
+            chatRoomName = "새 채팅방";
+        }
+        communicator.createChatRoom(chatRoomName,mUserList,onCreateChatRoomResponse);
+    }
+
+    // 새 채팅방으로 이동
+    private void moveNewChatRoom (String chatRoomId) {
+        Intent intent = new Intent(CreateRoomActivity.this, ChatActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    // 새 채팅방 생성 호출 결과
+    private Callback onCreateChatRoomResponse = new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+        }
+
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+            String chatRoomId = response.body().string();
+            moveNewChatRoom(chatRoomId);
         }
     };
 
@@ -107,6 +143,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                             userTextView.setText(userTxt);
                             userTextView.setVisibility(View.VISIBLE);
                             mUserIdEdit.setText("");
+                            mUserList.add(userId);
                         }
                     });
             } catch(Exception e) {
