@@ -29,7 +29,7 @@ public class myMeetingTime extends Activity{
         );
 
         GridSchedule = (GridView) findViewById(R.id.my_timetable);
-        timeAdapter = new TimeAdapter(this);
+        timeAdapter = new TimeAdapter(this, 1);
         GridSchedule.setAdapter(timeAdapter);
         GridSchedule.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override

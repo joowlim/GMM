@@ -2,6 +2,7 @@ package com.example.limjoowon.gmm;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,27 @@ public class TimeAdapter extends BaseAdapter {
     String[] hours = { "10-11", "11-12", "12-13", "13-14", "14-15", "15-16", "16-17", "17-18",
             "18-19", "19-20", "20-21", "21-22", "22-23", "23-0", "0-1", "1-2"};
     public int[][] timeInfo;
+    int number;
+    int[] colors;
 
 
-    public TimeAdapter(Context context){
+    public int[] gen_colors(int num){
+        int start = 0xffff;
+        int end = 0x0000;
+        int[] result = new int[num];
+        for (int i=0; i<num; i++){
+            result[i]= 0xffff0000 + (int) (start*(1-i*1.0/(num-1))+end*(i*1.0/(num-1)));
+        }
+        return result;
+    }
+
+    public TimeAdapter(Context context, int num){
         mContext = context;
         timeInfo = new int[16][7];
+        number=num+1;
+        Log.v("number", ""+number);
+        colors = gen_colors(number);
+
     }
     public int[][] getTimeInfo(){
         return timeInfo;
@@ -80,19 +97,12 @@ public class TimeAdapter extends BaseAdapter {
         else if (position >= 8 && position < count) {
             int indexX = (position-8)/8;
             int indexY = position%8-1;
-            if (timeInfo[indexX][indexY]==0) {
+
                 v = new TextView(mContext);
                 ((TextView) v).setGravity(Gravity.CENTER);
-                v.setBackgroundColor(Color.WHITE);
-                v.setLayoutParams(new GridView.LayoutParams(168, 106));
-            }
-            else{
-                v = new TextView(mContext);
-                ((TextView) v).setGravity(Gravity.CENTER);
-                v.setBackgroundColor(Color.RED);
+                v.setBackgroundColor(colors[timeInfo[indexX][indexY]]);
                 v.setLayoutParams(new GridView.LayoutParams(168, 106));
 
-            }
         }
         else {
             v = oldView;
