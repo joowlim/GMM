@@ -51,6 +51,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 String[] list = msg.split(",");
                 String chatRoomName = list[1];
                 LocalChatDataManager.getInstance().setRoomName(chatRoomName);
+                msg = "새 채팅방에 초대되었습니다.";
             }
 
             // msg, senderId 등이 null 이거나 empty string 이면 잘못된 메시지로 판단하고 return
@@ -77,7 +78,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
-
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
