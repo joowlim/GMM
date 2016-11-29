@@ -4,9 +4,11 @@ import com.example.limjoowon.gmm.GMMApplication;
 import com.example.limjoowon.gmm.config.MsgServerConfig;
 import com.example.limjoowon.gmm.config.UserConfig;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -54,6 +56,43 @@ public class GMMServerCommunicator {
     }
 
     /**
+     * 채팅방을 생성한다.
+     */
+    public void createChatRoom(String name, List<String> userList, Callback callback) {
+        try {
+            OkHttpClient client = new OkHttpClient();
+            String url = MsgServerConfig.getCreateChatRoomAPIUri();
+
+            JSONObject obj = new JSONObject();
+            obj.put("name", name);
+            obj.put("sender", userList.get(0));
+            String user_array = "";
+            int cnt = 0;
+            for (String user : userList) {
+                if ((cnt++) != 0)
+                    user_array += ",";
+                user_array = user_array + user;
+            }
+            obj.put("user_array", user_array);
+
+            String json = obj.toString();
+            RequestBody body = RequestBody.create(MsgServerConfig.MEDIATYPE_JSON, json);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+
+            // 사용자가 지정한 callback이 없으면 기본 Callback으로 설정
+            if (callback == null) {
+                callback = onMessageCallback;
+            }
+            client.newCall(request).enqueue(callback);
+        } catch(Exception e) {
+
+        }
+    }
+
+    /**
      * 사용자를 검색한다.
      * /user/search API 호출
      */
@@ -68,19 +107,17 @@ public class GMMServerCommunicator {
     }
 
     /**
-     * 메시지 전송 결과에 대한 Callback
+     * 기본 Callback
      */
     private Callback onMessageCallback = new Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
-            // TODO : 메시지 전송에 실패했을 때 알맞은 처리를 추후에 한다.
             int debug;
             debug = 1;
         }
 
         @Override
         public void onResponse(Call call, Response response) throws IOException {
-            // TODO : 메시지 전송에 성공했을 때 알맞은 처리를 추후에 한다.
             int debug;
             debug = 1;
         }
