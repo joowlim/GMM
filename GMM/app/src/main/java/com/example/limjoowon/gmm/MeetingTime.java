@@ -25,7 +25,7 @@ public class MeetingTime extends Activity {
     GridView GridSchedule;
     TimeAdapter timeAdapter;
     int number_participant;
-    int[][] fakeTimeTable;
+    int[][] timeTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class MeetingTime extends Activity {
                 final String time_info = object.getString("time");
 
                 number_participant=Integer.parseInt(number);
-                fakeTimeTable = changeAllTimeInfo(time_info);
+                timeTable = changeAllTimeInfo(time_info);
 
                 if (sessionId == null) {
                 } else
@@ -88,7 +88,7 @@ public class MeetingTime extends Activity {
                             timeAdapter = new TimeAdapter(MeetingTime.this, number_participant);
 
                             for (int i=0; i<7*16; i++){
-                                timeAdapter.setTimeInfo(fakeTimeTable[i/7][i%7], i/7, i%7);
+                                timeAdapter.setTimeInfo(timeTable[i/7][i%7], i/7, i%7);
                             }
                             GridSchedule.setAdapter(timeAdapter);
                         }

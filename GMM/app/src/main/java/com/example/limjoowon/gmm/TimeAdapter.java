@@ -2,7 +2,6 @@ package com.example.limjoowon.gmm;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,6 @@ public class TimeAdapter extends BaseAdapter {
         mContext = context;
         timeInfo = new int[16][7];
         number=num+1;
-        Log.v("number", ""+number);
         colors = gen_colors(number);
 
     }
