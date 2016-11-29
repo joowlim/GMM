@@ -31,12 +31,21 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // JSON 형태의 메시지를 파싱한다.
         String msg="";
+        String chatRoomId = "";
         String senderId="";
+        String senderGoogle = "";
+        String senderName = "";
+        String senderProfile = "";
+
         try {
             String jsonStr = remoteMessage.getData().get("message");
             JSONObject obj = new JSONObject(jsonStr);
             msg = obj.getString(MsgServerConfig.KEY_MSG);
             senderId = obj.getString(MsgServerConfig.KEY_SENDER);
+            senderGoogle = obj.getString(MsgServerConfig.KEY_SENDER_GOOGLE);
+            senderName = obj.getString(MsgServerConfig.KEY_SENDER_NAME);
+            senderProfile = obj.getString(MsgServerConfig.KEY_SENDER_PROFILE_URI);
+            chatRoomId = obj.getString(MsgServerConfig.KEY_CHAT_ROOM_ID);
 
             // msg, senderId 등이 null 이거나 empty string 이면 잘못된 메시지로 판단하고 return
             if (msg == null || msg.isEmpty() || senderId == null || senderId.isEmpty()) return;
@@ -46,11 +55,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         } catch(Exception e) {
         }
         // 로컬에 저장
-        LocalChatDataManager.getInstance().saveNewMessage("", senderId, msg);
+        LocalChatDataManager.getInstance().saveNewMessage(chatRoomId, senderId, senderGoogle, senderName, senderProfile, msg);
 
         // 채팅화면이 활성화 상태이면 broadcast로 바로 메시지를 주고 아니면 Noti를 해준다.
         if (GMMApplication.isChatRoomInForeground()) {
-            sendBroadCast(senderId, msg);
+            sendBroadCast(senderId, senderGoogle, senderName, senderProfile, msg);
         } else {
             sendNotification(senderId, msg);
         }
@@ -77,11 +86,16 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
-    private void sendBroadCast(String senderId, String msg) {
+    private void sendBroadCast(String senderId, String googleId, String name, String profile, String msg) {
         Intent broadcastIntent = new Intent();
+
         broadcastIntent.setAction(ChatActivity.mBroadcastStringAction);
         broadcastIntent.putExtra(MsgServerConfig.KEY_MSG, msg);
         broadcastIntent.putExtra(MsgServerConfig.KEY_SENDER, senderId);
+        broadcastIntent.putExtra(MsgServerConfig.KEY_SENDER_GOOGLE, googleId);
+        broadcastIntent.putExtra(MsgServerConfig.KEY_SENDER_NAME, name);
+        broadcastIntent.putExtra(MsgServerConfig.KEY_SENDER_PROFILE_URI, profile);
+
         sendBroadcast(broadcastIntent);
     }
 }

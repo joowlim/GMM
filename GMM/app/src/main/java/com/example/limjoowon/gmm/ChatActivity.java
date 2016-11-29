@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.limjoowon.gmm.config.MsgServerConfig;
+import com.example.limjoowon.gmm.config.UserConfig;
 import com.example.limjoowon.gmm.module.GMMMessenger;
 import com.example.limjoowon.gmm.module.LocalChatDataManager;
 
@@ -83,8 +84,8 @@ public class ChatActivity extends AppCompatActivity {
             for(int i = 0; i<array.length(); i++) {
                 JSONObject obj = (JSONObject) array.get(i);
                 String msg = generateMsg(
-                        obj.getString(LocalChatDataManager.KEY_SENDER),
-                        obj.getString(LocalChatDataManager.KEY_MSG));
+                        obj.getString(MsgServerConfig.KEY_SENDER),
+                        obj.getString(MsgServerConfig.KEY_MSG));
                 msgList.add(msg);
             }
 
@@ -127,8 +128,10 @@ public class ChatActivity extends AppCompatActivity {
 
         mEditText.setText("");
 
+        UserConfig user = UserConfig.getInstance();
         // 로컬에 새메시지 저장
-        LocalChatDataManager.getInstance().saveNewMessage("", GMMApplication.getToken(), msg);
+        LocalChatDataManager.getInstance().saveNewMessage(
+                "", GMMApplication.getToken(), user.getUserId(), user.getUserName(), user.getProfilePicUri(), msg);
 
         // 리스트뷰에 새 메시지 추가
         mAdapter.add(generateMsg("me", msg));

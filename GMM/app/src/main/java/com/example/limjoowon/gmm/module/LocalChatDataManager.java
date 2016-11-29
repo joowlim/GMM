@@ -22,8 +22,6 @@ public class LocalChatDataManager {
      * SharedPreference 이름 및 Key 값들
      */
     private static String SP_NAME = "gmm_sp_message";
-    public static String KEY_SENDER = "sender_id";
-    public static String KEY_MSG = "msg";
 
     /**
      * Singleton 객체
@@ -51,7 +49,7 @@ public class LocalChatDataManager {
      * @param msg 메시지
      * @return 실패하면 false 반환
      */
-    public boolean saveNewMessage(String chatRoomId, String sender, String msg) {
+    public boolean saveNewMessage(String chatRoomId, String sender, String googleId, String name, String profile, String msg) {
         //TODO: 지금은 하드코딩. 추후에 실제 chatRoomId로 변경
         chatRoomId = MsgServerConfig.CHAT_ROOM_ID;
 
@@ -64,8 +62,10 @@ public class LocalChatDataManager {
             }
 
             JSONObject obj = new JSONObject();
-            obj.put(KEY_MSG, msg);
-            obj.put(KEY_SENDER, sender);
+            obj.put(MsgServerConfig.KEY_MSG, msg);
+            obj.put(MsgServerConfig.KEY_SENDER, sender);
+            obj.put(MsgServerConfig.KEY_SENDER_GOOGLE, googleId);
+            obj.put(MsgServerConfig.KEY_SENDER_NAME, name);
             array.put(obj);
 
             String newStr = array.toString();

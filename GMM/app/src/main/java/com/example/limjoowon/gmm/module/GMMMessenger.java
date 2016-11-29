@@ -2,6 +2,7 @@ package com.example.limjoowon.gmm.module;
 
 import com.example.limjoowon.gmm.GMMApplication;
 import com.example.limjoowon.gmm.config.MsgServerConfig;
+import com.example.limjoowon.gmm.config.UserConfig;
 
 import org.json.JSONObject;
 
@@ -29,10 +30,16 @@ public class GMMMessenger {
         try {
             OkHttpClient client = new OkHttpClient();
             String url = MsgServerConfig.getSendMessageAPIUri();
+
+            UserConfig user = UserConfig.getInstance();
             JSONObject obj = new JSONObject();
             obj.put(MsgServerConfig.KEY_MSG, msg);
             // TODO : 추후 google ID로 SENDER를 분류해야 하지 않을까?
             obj.put(MsgServerConfig.KEY_SENDER, GMMApplication.getToken());
+            obj.put(MsgServerConfig.KEY_SENDER_GOOGLE, user.getUserId());
+            obj.put(MsgServerConfig.KEY_SENDER_NAME, user.getUserName());
+            obj.put(MsgServerConfig.KEY_SENDER_PROFILE_URI, user.getProfilePicUri());
+            obj.put(MsgServerConfig.KEY_CHAT_ROOM_ID, chatRoomId);
 
             String json = obj.toString();
             RequestBody body = RequestBody.create(MsgServerConfig.MEDIATYPE_JSON, json);
