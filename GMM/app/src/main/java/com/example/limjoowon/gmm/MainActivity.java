@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity{
 
         // ListView에 아이템 추가
         m_Adapter.add("채팅방1");
-        m_Adapter.add("채팅방2");
     }
 
     // 아이템 터치 이벤트
@@ -77,10 +76,6 @@ public class MainActivity extends AppCompatActivity{
             Toast.makeText(getApplicationContext(), m_Adapter.getItem(arg2), Toast.LENGTH_SHORT).show();
             if (m_Adapter.getItem(arg2)=="채팅방1") {
                 Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-                startActivity(intent);
-            }
-            else if (m_Adapter.getItem(arg2)=="채팅방2") {
-                Intent intent = new Intent(MainActivity.this, location.class);
                 startActivity(intent);
             }
         }
