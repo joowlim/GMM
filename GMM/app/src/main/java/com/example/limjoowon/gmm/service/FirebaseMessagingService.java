@@ -18,6 +18,8 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Google FCM 메시지를 받는 서비스 클래스
  * Created by kijong on 2016-11-07.
@@ -43,6 +45,13 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             senderName = obj.getString(MsgServerConfig.KEY_SENDER_NAME);
             senderProfile = obj.getString(MsgServerConfig.KEY_SENDER_PROFILE_URI);
             chatRoomId = obj.getString(MsgServerConfig.KEY_CHAT_ROOM_ID);
+
+            // 새채팅방 생성 메시지면 채팅방 이름 설정!
+            if (msg.startsWith("**newChat**")) {
+                String[] list = msg.split(",");
+                String chatRoomName = list[1];
+                LocalChatDataManager.getInstance().setRoomName(chatRoomName);
+            }
 
             // msg, senderId 등이 null 이거나 empty string 이면 잘못된 메시지로 판단하고 return
             if (msg == null || msg.isEmpty() || senderId == null || senderId.isEmpty()) return;

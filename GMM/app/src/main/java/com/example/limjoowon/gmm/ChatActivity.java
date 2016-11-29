@@ -64,7 +64,11 @@ public class ChatActivity extends AppCompatActivity {
      * 채팅방 Activity의 UI를 초기화 한다.
      */
     private void initUI() {
-        setTitle("채팅방1");
+        String title = LocalChatDataManager.getInstance().getRoomName();
+        if (title == null || title.isEmpty()) {
+            title = "채팅방";
+        }
+        setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mEditText = (EditText) findViewById(R.id.msg_edit_text);
         mSendBtn = (Button) findViewById(R.id.msg_send_btn);

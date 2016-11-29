@@ -23,6 +23,8 @@ public class LocalChatDataManager {
      */
     private static String SP_NAME = "gmm_sp_message";
 
+    private static String KEY_ROOM_NAME = "room_name";
+
     /**
      * Singleton 객체
      */
@@ -80,6 +82,16 @@ public class LocalChatDataManager {
     }
 
     /**
+     * 채팅방 Clear
+     */
+    public void clearChat() {
+        SharedPreferences pref = GMMApplication.getContext().getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(MsgServerConfig.CHAT_ROOM_ID,"");
+        editor.commit();
+    }
+
+    /**
      * 해당 채팅방의 모든 메시지를 얻어온다.
      * @param chatRoomId 채팅방 ID
      * @return JSONArray 형태이다. 없을 경우 빈 Array를 반환한다.
@@ -100,5 +112,22 @@ public class LocalChatDataManager {
         } finally {
             return array;
         }
+    }
+
+    public String getRoomName() {
+        String roomName = "";
+        SharedPreferences pref = GMMApplication.getContext().getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        String str = pref.getString(KEY_ROOM_NAME, "");
+        return str;
+    }
+
+    public void setRoomName(String roomName) {
+        if(roomName == null || roomName == "") return;
+        SharedPreferences pref = GMMApplication.getContext().getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(KEY_ROOM_NAME,roomName);
+        editor.commit();
+
+        clearChat();
     }
 }

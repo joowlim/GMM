@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.limjoowon.gmm.config.UserConfig;
 import com.example.limjoowon.gmm.module.GMMServerCommunicator;
+import com.example.limjoowon.gmm.module.LocalChatDataManager;
 
 import org.json.JSONObject;
 
@@ -34,6 +35,7 @@ public class CreateRoomActivity extends AppCompatActivity {
     private int mTotalUser = 0;
     private TextView mUser1,mUser2;
     private List<String> mUserList;
+    private String mNewChatRoomName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,11 +89,13 @@ public class CreateRoomActivity extends AppCompatActivity {
         if (chatRoomName == null || chatRoomName.isEmpty()) {
             chatRoomName = "새 채팅방";
         }
+        mNewChatRoomName = chatRoomName;
         communicator.createChatRoom(chatRoomName,mUserList,onCreateChatRoomResponse);
     }
 
     // 새 채팅방으로 이동
     private void moveNewChatRoom (String chatRoomId) {
+        LocalChatDataManager.getInstance().setRoomName(mNewChatRoomName);
         Intent intent = new Intent(CreateRoomActivity.this, ChatActivity.class);
         startActivity(intent);
         finish();
