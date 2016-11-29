@@ -28,11 +28,14 @@ public class Login extends FragmentActivity implements GoogleApiClient.OnConnect
     private static final int RC_SIGN_IN = 7001;
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
+    private boolean mDirectGoToChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mDirectGoToChat = getIntent().getBooleanExtra("GoToChat",false);
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -117,7 +120,13 @@ public class Login extends FragmentActivity implements GoogleApiClient.OnConnect
             setUserInfo(acct);
            // mStatusTextView.setText(acct.getDisplayName());
            // updateUI(true);
-            Intent intent = new Intent(Login.this, MainActivity.class);
+
+            Intent intent;
+            if (mDirectGoToChat) {
+                intent = new Intent(Login.this, ChatActivity.class);
+            } else {
+                intent = new Intent(Login.this, MainActivity.class);
+            }
             startActivity(intent);
             finish();
         } else {

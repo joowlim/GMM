@@ -26,9 +26,29 @@ public class MsgServerConfig {
     public static String KEY_MSG = "msg";
 
     /**
-     * JSON 에서 Sender를 분류하는 Key값
+     * JSON 에서 Sender를 분류하는 Key값 TOKEN
      */
     public static String KEY_SENDER = "sender_id";
+
+    /**
+     * JSON에서 Sender의 Google ID
+     */
+    public static String KEY_SENDER_GOOGLE = "sender_google";
+
+    /**
+     * JSON에서 Sender의 Google 이름
+     */
+    public static String KEY_SENDER_NAME = "sender_name";
+
+    /**
+     * JSON에서 Sender의 PorfileUri
+     */
+    public static String KEY_SENDER_PROFILE_URI = "sender_profile";
+
+    /**
+     * JSON에서 메시지가 온 ChatRoomId KEY
+     */
+    public static String KEY_CHAT_ROOM_ID = "key_chat_room_id";
 
     /**
      * TODO: 하드코딩 CHAT_ROOM_ID 추후 제거
