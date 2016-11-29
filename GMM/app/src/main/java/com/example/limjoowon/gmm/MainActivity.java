@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.limjoowon.gmm.module.GMMServerCommunicator;
+import com.example.limjoowon.gmm.module.LocalChatDataManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -65,19 +66,31 @@ public class MainActivity extends AppCompatActivity{
         m_ListView.setOnItemClickListener(onClickListItem);
 
         // ListView에 아이템 추가
-        m_Adapter.add("채팅방1");
+        String str = LocalChatDataManager.getInstance().getRoomName();
+        if (str.isEmpty()) {
+            str = "채팅방";
+        }
+        m_Adapter.add(str);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        m_Adapter.remove(m_Adapter.getItem(0));
+        String str = LocalChatDataManager.getInstance().getRoomName();
+        if (str.isEmpty()) {
+            str = "채팅방";
+        }
+        m_Adapter.add(str);
+        m_Adapter.notifyDataSetChanged();
+    }
+
 
     // 아이템 터치 이벤트
     public AdapterView.OnItemClickListener onClickListItem = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            // 이벤트 발생 시 해당 아이템 위치의 텍스트를 출력
-            Toast.makeText(getApplicationContext(), m_Adapter.getItem(arg2), Toast.LENGTH_SHORT).show();
-            if (m_Adapter.getItem(arg2)=="채팅방1") {
-                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+            startActivity(intent);
         }
     };
     @Override

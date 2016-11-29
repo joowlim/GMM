@@ -25,7 +25,7 @@ public class UserConfig {
      */
     private String mProfilePicUri;
 
-    private final String DEFAULT_PROFILE_URI = "http://pic2.pbsrc.com/common/profile_female_large.jpg";
+    public static final String DEFAULT_PROFILE_URI = "http://pic2.pbsrc.com/common/profile_female_large.jpg";
 
     private UserConfig(){
         mUserId = "";

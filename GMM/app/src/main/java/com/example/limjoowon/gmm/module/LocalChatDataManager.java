@@ -68,6 +68,7 @@ public class LocalChatDataManager {
             obj.put(MsgServerConfig.KEY_SENDER, sender);
             obj.put(MsgServerConfig.KEY_SENDER_GOOGLE, googleId);
             obj.put(MsgServerConfig.KEY_SENDER_NAME, name);
+            obj.put(MsgServerConfig.KEY_SENDER_PROFILE_URI, profile);
             array.put(obj);
 
             String newStr = array.toString();

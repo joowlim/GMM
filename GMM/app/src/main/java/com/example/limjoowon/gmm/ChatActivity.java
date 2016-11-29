@@ -33,9 +33,10 @@ public class ChatActivity extends AppCompatActivity {
     public static final String mBroadcastStringAction = "com.example.limjoowon.gmm.broadcast.string";
     private EditText mEditText;
     private Button mSendBtn;
-    private ArrayAdapter<String> mAdapter;
+    private MsgListAdapter mAdapter;
     private ListView mListView;
     private IntentFilter mIntentFilter;
+    private ArrayList<MsgItemData> mMsgList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,35 +84,46 @@ public class ChatActivity extends AppCompatActivity {
      */
     private void generateInitialListView() {
         try {
-            ArrayList<String> msgList = new ArrayList<String>();
+            ArrayList<MsgItemData> msgList = new ArrayList<MsgItemData>();
             JSONArray array = LocalChatDataManager.getInstance().getAllMessage("");
 
             for(int i = 0; i<array.length(); i++) {
                 JSONObject obj = (JSONObject) array.get(i);
-                String msg = generateMsg(
-                        obj.getString(MsgServerConfig.KEY_SENDER),
-                        obj.getString(MsgServerConfig.KEY_MSG));
-                msgList.add(msg);
-            }
+                String msg = obj.getString(MsgServerConfig.KEY_MSG);
+                String senderName = obj.getString(MsgServerConfig.KEY_SENDER_NAME);
+                String profileUri = obj.getString(MsgServerConfig.KEY_SENDER_PROFILE_URI);
+                String senderId = obj.getString(MsgServerConfig.KEY_SENDER_GOOGLE);
+                String senderToken = obj.getString(MsgServerConfig.KEY_SENDER);
 
-            mAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.chat_list_item, R.id.chat_list_itm_txt, msgList);
+                msgList.add(getMsgItemData(msg,senderName, senderId, senderToken, profileUri));
+            }
+            mAdapter = new MsgListAdapter(ChatActivity.this, msgList);
+            mMsgList = msgList;
             mListView.setAdapter(mAdapter);
         } catch(Exception e) {
             return;
         }
     }
 
-    /**
-     * 임시 메소드
-     */
-    private String generateMsg(String sender, String msg) {
-        if (sender.equals(GMMApplication.getToken()) ||
-                sender.equals("me")) {
-            sender = "나";
-        } else {
-            sender = "사용자" + sender.substring(20,23).toLowerCase();
+    private MsgItemData getMsgItemData(String msg, String name, String id, String token, String profile) {
+        try {
+            boolean fromMe = false;
+            if (token.equals(GMMApplication.getToken()) ||
+                    token.equals("me") || id.equals(UserConfig.getInstance().getUserId())) {
+                fromMe = true;
+
+                if (msg.startsWith("**newChat**")) {
+                    msg = "새 채팅방을 생성하였습니다.";
+                }
+
+                if (msg.equals("상대방테스트") || msg.equals("상대방 테스트 12345")) {
+                    fromMe = false;
+                }
+            }
+            return new MsgItemData(msg, 1, id, name, profile,fromMe);
+        } catch(Exception e) {
+            return null;
         }
-        return "[" + sender + "]  :  " + msg;
     }
 
     /**
@@ -139,7 +151,9 @@ public class ChatActivity extends AppCompatActivity {
                 "", GMMApplication.getToken(), user.getUserId(), user.getUserName(), user.getProfilePicUri(), msg);
 
         // 리스트뷰에 새 메시지 추가
-        mAdapter.add(generateMsg("me", msg));
+
+        mMsgList.add(getMsgItemData(msg, user.getUserName(), user.getUserId(), "me", user.getProfilePicUri()));
+        mAdapter.setItems(mMsgList);
         mAdapter.notifyDataSetChanged();
 
         // 서버로 메시지 전송
@@ -154,14 +168,18 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getStringExtra(MsgServerConfig.KEY_MSG);
-            String senderId = intent.getStringExtra(MsgServerConfig.KEY_SENDER);
+            String senderToken = intent.getStringExtra(MsgServerConfig.KEY_SENDER);
+            String senderId = intent.getStringExtra(MsgServerConfig.KEY_SENDER_GOOGLE);
+            String senderName = intent.getStringExtra(MsgServerConfig.KEY_SENDER_NAME);
+            String profileUri = intent.getStringExtra(MsgServerConfig.KEY_SENDER_PROFILE_URI);
 
             //ListView 업데이트
-            final String newMsg = generateMsg(senderId, msg);
+            final MsgItemData newMsg = getMsgItemData(msg, senderName, senderId, senderToken, profileUri);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.add(newMsg);
+                    mMsgList.add(newMsg);
+                    mAdapter.setItems(mMsgList);
                     mAdapter.notifyDataSetChanged();
                 }
             });
