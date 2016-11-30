@@ -4,20 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
+
 
 import com.example.limjoowon.gmm.module.GMMServerCommunicator;
 import com.example.limjoowon.gmm.module.LocalChatDataManager;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
+
 
 
 public class MainActivity extends AppCompatActivity{
@@ -25,6 +23,7 @@ public class MainActivity extends AppCompatActivity{
     private ArrayAdapter<String> m_Adapter;
     private GoogleApiClient mGoogleApiClient;
     private FloatingActionButton mNewChatBtn;
+    private static int GO_SETTING = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,22 +36,6 @@ public class MainActivity extends AppCompatActivity{
         // UI 초기화
         initializeUI();
 
-        Button signout = (Button) findViewById(R.id.logout);
-
-        signout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                // 확인창이라도 띄워야겠다..
-                                Intent intent = new Intent(MainActivity.this, Login.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });
-            }});
         // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
         m_Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1);
 
@@ -84,6 +67,38 @@ public class MainActivity extends AppCompatActivity{
         m_Adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.setting, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch( item.getItemId() ) {
+            case R.id.setting_btn:
+                Intent i = new Intent(MainActivity.this, SettingActivity.class);
+                startActivityForResult(i,GO_SETTING);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GO_SETTING && resultCode == RESULT_OK) {
+            Bundle extraBundle = data.getExtras();
+            boolean isLogout = extraBundle.getBoolean("isLogout",false);
+            if (isLogout) {
+                Intent intent = new Intent(MainActivity.this, Login.class);
+                startActivity(intent);
+                finish();
+            }
+        }
+    }
+
 
     // 아이템 터치 이벤트
     public AdapterView.OnItemClickListener onClickListItem = new AdapterView.OnItemClickListener() {
@@ -93,24 +108,14 @@ public class MainActivity extends AppCompatActivity{
             startActivity(intent);
         }
     };
-    @Override
-    protected void onStart() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-        mGoogleApiClient.connect();
-        super.onStart();
-    }
+
 
     /**
      * UI를 초기화 한다.
      */
     private void initializeUI() {
         mNewChatBtn = (FloatingActionButton) findViewById(R.id.floating_btn);
-
+        setTitle("조모임메신저");
         // 새채팅방생성으로 이동
         mNewChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
