@@ -78,8 +78,12 @@ public class MainActivity extends AppCompatActivity{
         String lastMessage = ":)";
         try {
             JSONArray array = LocalChatDataManager.getInstance().getAllMessage("");
-            JSONObject obj = (JSONObject) array.get(array.length()-1);
-            lastMessage = obj.getString(MsgServerConfig.KEY_MSG);
+            if (array == null || array.length() == 0) {
+                lastMessage = "새 채팅방이 생성되었습니다.";
+            } else {
+                JSONObject obj = (JSONObject) array.get(array.length() - 1);
+                lastMessage = obj.getString(MsgServerConfig.KEY_MSG);
+            }
         }catch (Exception e){
         }
         if (chatName.isEmpty()) {
