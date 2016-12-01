@@ -21,7 +21,7 @@ public class TimeManager {
         Time 정보를 보낸다
      */
 
-    public static void sendTimeInfo(String session_id, String user_id, String time_info){
+    public static void sendTimeInfo(String session_id, String user_id, String time_info, Callback callback){
         try {
             OkHttpClient client = new OkHttpClient();
             String url = TimeConfig.sendTimeInfoAPIUri();
@@ -36,8 +36,10 @@ public class TimeManager {
                     .url(url)
                     .post(body)
                     .build();
-
-            client.newCall(request).enqueue(onMessageCallback);
+            if (callback == null) {
+                callback = onMessageCallback;
+            }
+            client.newCall(request).enqueue(callback);
         } catch(Exception e) {
         }
     }

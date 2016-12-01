@@ -37,6 +37,7 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
         mapFragment.getMapAsync(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("장소");
 
         Button set_my_location =(Button)findViewById(R.id.set_my_location);
         set_my_location.setOnClickListener(this);

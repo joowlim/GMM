@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:text="시간"
+            android:text="개인 시간 설정"
             android:textColor="#ffffff"
             android:layout_gravity="center"
             android:gravity="center">

@@ -44,7 +44,7 @@ public class myMeetingTime extends Activity{
                     public void onClick(View view) {
                         //timeTable=timeAdapter.getTimeInfo();
                         String time_info = timeInfoToString(timeTable);
-                        TimeManager.sendTimeInfo("abcd", "3", time_info);
+                        TimeManager.sendTimeInfo("abcd", "3", time_info, onSendTimeResponse);
                     }
                 }
         );
@@ -63,9 +63,12 @@ public class myMeetingTime extends Activity{
                 int indexX = (position - 8) / 8;
                 int indexY = position % 8 - 1;
                 if (timeAdapter.getTimeInfo()[indexX][indexY] == 1){
+                    timeTable[indexX][indexY] = 0;
                     timeAdapter.setTimeInfo(0, indexX, indexY);
+
                 }
                 else{
+                    timeTable[indexX][indexY] = 1;
                     timeAdapter.setTimeInfo(1, indexX, indexY);
                 }
                 timeAdapter.notifyDataSetChanged();
@@ -94,7 +97,8 @@ public class myMeetingTime extends Activity{
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(myMeetingTime.this, "good", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(myMeetingTime.this, "내 시간을 업데이트 하였습니다", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     });
             } catch(Exception e) {
