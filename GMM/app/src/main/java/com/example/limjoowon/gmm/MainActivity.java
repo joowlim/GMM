@@ -12,9 +12,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.limjoowon.gmm.config.MsgServerConfig;
 import com.example.limjoowon.gmm.module.GMMServerCommunicator;
 import com.example.limjoowon.gmm.module.LocalChatDataManager;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -53,6 +57,12 @@ public class MainActivity extends AppCompatActivity{
         Drawable image = res.getDrawable(R.mipmap.ceaser);
         String chatName = LocalChatDataManager.getInstance().getRoomName();
         String lastMessage = ":)";
+        try {
+            JSONArray array = LocalChatDataManager.getInstance().getAllMessage("");
+            JSONObject obj = (JSONObject) array.get(array.length()-1);
+            lastMessage = obj.getString(MsgServerConfig.KEY_MSG);
+        }catch (Exception e){
+        }
         if (chatName.isEmpty()) {
             chatName = "채팅방";
         }
@@ -66,6 +76,12 @@ public class MainActivity extends AppCompatActivity{
         Drawable image = res.getDrawable(R.mipmap.ceaser);
         String chatName = LocalChatDataManager.getInstance().getRoomName();
         String lastMessage = ":)";
+        try {
+            JSONArray array = LocalChatDataManager.getInstance().getAllMessage("");
+            JSONObject obj = (JSONObject) array.get(array.length()-1);
+            lastMessage = obj.getString(MsgServerConfig.KEY_MSG);
+        }catch (Exception e){
+        }
         if (chatName.isEmpty()) {
             chatName = "채팅방";
         }
