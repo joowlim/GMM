@@ -9,6 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by LimJoowon on 2016. 11. 20..
  */
@@ -39,7 +43,53 @@ public class TimeAdapter extends BaseAdapter {
         number=num+1;
         colors = gen_colors(number);
 
+        // 시간 목록 설정
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat CurDayFormat = new SimpleDateFormat("dd");
+        String strCurDay = CurDayFormat.format(date);
+        int curDay = Integer.parseInt(strCurDay);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        for(int i=0;i<7;i++) {
+            int nowDay = curDay + i;
+            String nowDayStr = Integer.toString(nowDay);
+            String yoIl = getYoIl(cal.get(Calendar.DAY_OF_WEEK) + i);
+            mWeekTitleIds[i] = ((nowDay > 9) ? nowDayStr : "0"+nowDayStr) + yoIl;
+        }
     }
+
+    public String getYoIl(int i) {
+        int dayNum = i%7;
+        String day = "";
+        switch(dayNum){
+            case 1:
+                day = "일";
+                break ;
+            case 2:
+                day = "월";
+                break ;
+            case 3:
+                day = "화";
+                break ;
+            case 4:
+                day = "수";
+                break ;
+            case 5:
+                day = "목";
+                break ;
+            case 6:
+                day = "금";
+                break ;
+            case 0:
+                day = "토";
+                break ;
+
+        }
+        return "(" + day + ")";
+    }
+
     public int[][] getTimeInfo(){
         return timeInfo;
     }
