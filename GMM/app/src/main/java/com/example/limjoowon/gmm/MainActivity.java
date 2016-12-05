@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity{
         try {
             JSONArray array = LocalChatDataManager.getInstance().getAllMessage("");
             if (array == null || array.length() == 0) {
-                lastMessage = "새 채팅방이 생성되었습니다.";
+                lastMessage = "아래의 추가 버튼을 클릭하여 새 채팅방을 만들어주세요.";
             } else {
                 JSONObject obj = (JSONObject) array.get(array.length() - 1);
                 lastMessage = obj.getString(MsgServerConfig.KEY_MSG);
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity{
         }catch (Exception e){
         }
         if (chatName.isEmpty()) {
-            chatName = "채팅방";
+            chatName = " ";
         }
         m_Adapter.addItem(image, chatName, lastMessage);
         m_Adapter.notifyDataSetChanged();
