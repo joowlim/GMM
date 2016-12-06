@@ -34,12 +34,11 @@ import okhttp3.Response;
  * Created by LimJoowon on 2016. 11. 3..
  */
 public class location extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
-    static final LatLng KAIST = new LatLng(36.37, 127.36);
+    static final LatLng KAIST = new LatLng(36.371, 127.36);
     static final LatLng N1 = new LatLng(36.374517, 127.365347);
     static final LatLng E3 = new LatLng(36.368305, 127.364789);
     private GoogleMap googleMap;
     Marker myLocMarker;
-    LatLng myMarkerPosition;
     double[][] groupLocMarkers;
 
     @Override
@@ -71,6 +70,21 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(KAIST, 15));
 
 
+        googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+            }
+
+        });
         if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED
                 &&ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
 
@@ -84,27 +98,9 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
         googleMap.setMyLocationEnabled(true);
-        googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
 
-            @Override
-            public void onMarkerDragStart(Marker marker) {
-                Log.v("DragStart", "drag");
-            }
 
-            @Override
-            public void onMarkerDragEnd(Marker marker) {
-                Log.v("DragEnd", marker.getPosition().toString());
-                myMarkerPosition = marker.getPosition();
-            }
-
-            @Override
-            public void onMarkerDrag(Marker marker) {
-                Log.v("Drag", "drag");
-            }
-
-        });
     }
 
     public void onClick(View v) {
@@ -116,7 +112,6 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
                             .position(E3)
                             .draggable(true)
                             .icon(BitmapDescriptorFactory.defaultMarker(5)));
-                    myMarkerPosition = myLocMarker.getPosition();
                 }
                 else{
                     myLocMarker.remove();
@@ -127,19 +122,20 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
                 try {
                     if (myLocMarker != null) {
                         LocationManager.sendLocationInfo("abcd", UserConfig.getInstance().getUserId(),
-                                myMarkerPosition.latitude, myMarkerPosition.longitude, onSendLocResponse);
+                                myLocMarker.getPosition().latitude, myLocMarker.getPosition().longitude, onSendLocResponse);
                         Log.v("refresh",myLocMarker.getPosition().latitude+", "+myLocMarker.getPosition().longitude);
                     }
-                    Thread.sleep(300);
+                    Thread.sleep(200);
                     LocationManager.getAllLocationInfo("abcd", onGetLocResponse);
                     googleMap.clear();
-                    Thread.sleep(300);
+                    Thread.sleep(200);
                     updateMarkers();
                    break;
                 } catch(InterruptedException e) {}
         }
 
     }
+
     public void updateMarkers(){
         myLocMarker = googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(groupLocMarkers[0][0], groupLocMarkers[0][1]))
