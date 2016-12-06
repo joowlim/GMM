@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GMM</string>
+    <string name="app_name">모둠</string>
     <string name="loading">loading</string>
     <string name="signed_out">signed_out</string>
     <string name="signed_in_fmt">LoginTest</string>

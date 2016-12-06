@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity{
      */
     private void initializeUI() {
         mNewChatBtn = (FloatingActionButton) findViewById(R.id.floating_btn);
-        setTitle("조모임메신저");
+        setTitle("모둠");
         // 새채팅방생성으로 이동
         mNewChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
