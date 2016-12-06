@@ -38,7 +38,7 @@ public class MeetLocationListActivity extends AppCompatActivity {
     private List<MeetLocationItemData> mDataList;
     private String mTime = "21061205-1900-2100";
     private String mBuilding = "N1";
-    private String mUri = "http://143.248.49.55:5000/reserve_info/{building}/{date}";
+    private String mUri = "http://143.248.49.55:8080/reserve_info/{building}/{date}";
     private ProgressDialog mProgressDialog;
 
     @Override

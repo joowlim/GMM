@@ -1,41 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="7dp"
     android:layout_height="match_parent">
 
-    <LinearLayout
+
+    <TextView
+        android:text="채팅방 이름"
+        android:textColor="#ee6666"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:orientation="horizontal">
-        <TextView
-            android:text="[채팅방 이름]"
-            android:textColor="#111"
-            android:textSize="19dp"
-            android:gravity="center_vertical"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:layout_height="match_parent" />
-        <EditText
-            android:id="@+id/chat_room_name_edit"
-            android:hint="새 채팅방"
-            android:layout_width="0dp"
-            android:layout_weight="5"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
+    <EditText
+        android:layout_marginTop="5dp"
+        android:id="@+id/chat_room_name_edit"
+        android:hint="새 채팅방"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     
     <LinearLayout
         android:layout_width="match_parent"
         android:background="#000"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:layout_height="1dp"></LinearLayout>
     
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:textColor="#111"
+        android:layout_height="38dp"
+        android:textColor="#ee6666"
+        android:textStyle="bold"
         android:gravity="center_vertical"
-        android:textSize="19dp"
+        android:textSize="20dp"
         android:text = "초대할 사용자"
         android:layout_marginBottom="5dp"/>
     
@@ -80,8 +78,8 @@
         android:layout_height="match_parent">
         <Button
             android:id="@+id/btn_create_room_done"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
             android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
             android:layout_gravity="center"

@@ -1,6 +1,7 @@
 package com.example.limjoowon.gmm;
 
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -132,6 +133,10 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
                     updateMarkers();
                    break;
                 } catch(InterruptedException e) {}
+            case R.id.recommend:
+                Intent i = new Intent(location.this, MeetLocationListActivity.class);
+                startActivity(i);
+                break;
         }
 
     }
