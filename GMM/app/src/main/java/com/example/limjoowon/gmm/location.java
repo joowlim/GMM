@@ -40,7 +40,8 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
     static final LatLng E3 = new LatLng(36.368305, 127.364789);
     private GoogleMap googleMap;
     Marker myLocMarker;
-    double[][] groupLocMarkers;
+    //초기화는 서버 연결 안 됐을 때 죽지 말라고
+    double[][] groupLocMarkers = {{KAIST.latitude, KAIST.longitude}, {N1.latitude, N1.longitude}, {E3.latitude, E3.longitude}};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
