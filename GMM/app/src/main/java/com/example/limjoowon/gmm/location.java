@@ -1,7 +1,6 @@
 package com.example.limjoowon.gmm;
 
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -33,13 +33,14 @@ import okhttp3.Response;
 /**
  * Created by LimJoowon on 2016. 11. 3..
  */
-public class location extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener  {
+public class location extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
     static final LatLng KAIST = new LatLng(36.37, 127.36);
-    //36.374517, 127.365347 N1
-    //36.368305, 127.364789 E3
+    static final LatLng N1 = new LatLng(36.374517, 127.365347);
+    static final LatLng E3 = new LatLng(36.368305, 127.364789);
     private GoogleMap googleMap;
     Marker myLocMarker;
-    double[][] groupLocMarkers = {{36.374517, 127.365347}, {36.368305, 127.364789}};
+    LatLng myMarkerPosition;
+    double[][] groupLocMarkers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +86,25 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
         }
 
         googleMap.setMyLocationEnabled(true);
-    }
-    public void meeting_time(View view){
+        googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
 
-        Intent i = new Intent(location.this, MeetingTime.class);
-        startActivity(i);
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                Log.v("DragStart", "drag");
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                Log.v("DragEnd", marker.getPosition().toString());
+                myMarkerPosition = marker.getPosition();
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+                Log.v("Drag", "drag");
+            }
+
+        });
     }
 
     public void onClick(View v) {
@@ -98,9 +113,10 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
             case R.id.set_my_location:
                 if (myLocMarker == null) {
                     myLocMarker = googleMap.addMarker(new MarkerOptions()
-                            .position(KAIST)
+                            .position(E3)
                             .draggable(true)
-                            .icon(BitmapDescriptorFactory.defaultMarker(10)));
+                            .icon(BitmapDescriptorFactory.defaultMarker(5)));
+                    myMarkerPosition = myLocMarker.getPosition();
                 }
                 else{
                     myLocMarker.remove();
@@ -108,23 +124,32 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
                 }
                 break;
             case R.id.loc_refresh:
-                if (myLocMarker != null) {
-                    LocationManager.sendLocationInfo("abcd", UserConfig.getInstance().getUserId(),
-                            myLocMarker.getPosition().latitude, myLocMarker.getPosition().longitude, onSendLocResponse);
-                }
-                Toast.makeText(location.this, "hi", Toast.LENGTH_SHORT).show();
-                //LocationManager.getAllLocationInfo("abcd", onGetLocResponse);
-                updateMarkers();
-                break;
+                try {
+                    if (myLocMarker != null) {
+                        LocationManager.sendLocationInfo("abcd", UserConfig.getInstance().getUserId(),
+                                myMarkerPosition.latitude, myMarkerPosition.longitude, onSendLocResponse);
+                        Log.v("refresh",myLocMarker.getPosition().latitude+", "+myLocMarker.getPosition().longitude);
+                    }
+                    Thread.sleep(300);
+                    LocationManager.getAllLocationInfo("abcd", onGetLocResponse);
+                    googleMap.clear();
+                    Thread.sleep(300);
+                    updateMarkers();
+                   break;
+                } catch(InterruptedException e) {}
         }
 
     }
     public void updateMarkers(){
-        for (int i=0; i<groupLocMarkers.length; i++) {
+        myLocMarker = googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(groupLocMarkers[0][0], groupLocMarkers[0][1]))
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.defaultMarker(5)));
+        for (int i=1; i<groupLocMarkers.length; i++) {
             googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(groupLocMarkers[i][0], groupLocMarkers[i][1]))
-                    .draggable(false)
-                    .icon(BitmapDescriptorFactory.defaultMarker(20)));
+                    .draggable(true)
+                    .icon(BitmapDescriptorFactory.defaultMarker(25)));
         }
     }
     @Override
@@ -137,56 +162,66 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
         @Override
         public void onFailure(Call call, IOException e) {
             int debug;
-            Log.e("send", "hi",e);
-            debug = 1;
+           debug = 1;
         }
 
         @Override
         public void onResponse(Call call, Response response) throws IOException {
             try {
-                Log.v("send", "bb");
                 String result = response.body().string();
                 JSONObject object = new JSONObject(result);
                 runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(location.this, "내 장소를 업데이트 하였습니다", Toast.LENGTH_SHORT).show();
-                            finish();
                         }
                     });
             } catch(Exception e) {
             }
         }
     };
+
     private Callback onGetLocResponse = new Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
             int debug;
-            Log.v("get", e.getMessage());
             debug = 1;
         }
 
         @Override
         public void onResponse(Call call, Response response) throws IOException {
             try {
-                String result = response.body().string();
-                JSONObject object = new JSONObject(result);
-                final String roomId = object.getString("room_id");
-                final String name = object.getString("user_id");
-                final double pos_lat = object.getDouble("pos_lat");
-                final double pos_lon = object.getDouble("pos_lon");
+                String jsonData = response.body().string();
+                JSONArray Jarray = new JSONArray(jsonData);
 
+                groupLocMarkers = new double[Jarray.length()][2];
 
-                if (roomId == null) {
-                } else
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(location.this, "hahaahahA", Toast.LENGTH_SHORT).show();
+                String name;
+                double pos_lat;
+                double pos_lon;
+                for (int i=0; i<Jarray.length(); i++) {
+                     Log.d("getLoc i", ""+i);
+                     JSONObject object = Jarray.getJSONObject(i);
+                     name = object.getString("user");
+                     pos_lat = object.getDouble("pos_lat");
+                     pos_lon = object.getDouble("pos_lon");
 
-                        }
-                    });
+                    if (UserConfig.getInstance().getUserId().equals(name) && i != 0){
+                            groupLocMarkers[i][0] = groupLocMarkers[0][0];
+                            groupLocMarkers[i][1] = groupLocMarkers[0][1];
+                            groupLocMarkers[0][0] = pos_lat;
+                            groupLocMarkers[0][1] = pos_lon;
+                    }
+                    else{
+                        groupLocMarkers[i][0] = pos_lat;
+                        groupLocMarkers[i][1] = pos_lon;
+                    }
+                    Log.d("getLoc l", ""+Jarray.getJSONObject(0).getDouble("pos_lat"));
+                    Log.d("getLoc m", ""+groupLocMarkers[0][0]);
+                }
+
             } catch(Exception e) {
+                Log.d("getLoc", e.getMessage());
             }
         }
     };

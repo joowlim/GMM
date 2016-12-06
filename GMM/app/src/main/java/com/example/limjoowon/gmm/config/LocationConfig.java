@@ -9,7 +9,7 @@ public class LocationConfig {
     /**
      * 우리 장소 서버 HOST URI
      */
-    public static final String HOST_URI = "http://143.248.49.55:5000";
+    public static final String HOST_URI = "http://143.248.49.55:8080";
 
     /**
      * 미디어타입 JSON HTTP HEAER
