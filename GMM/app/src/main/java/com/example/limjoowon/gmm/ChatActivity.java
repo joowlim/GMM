@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -52,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onResume();
         GMMApplication.setChatRoomInForeground(true);
         registerReceiver(mReceiver, mIntentFilter);
+        scrollMyListViewToBottom();
     }
 
     @Override
@@ -75,6 +77,20 @@ public class ChatActivity extends AppCompatActivity {
         mSendBtn = (Button) findViewById(R.id.msg_send_btn);
         mListView = (ListView) findViewById(R.id.msg_list);
         mSendBtn.setOnClickListener(onSendBtnClick);
+
+        mEditText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollMyListViewToBottom();
+                            }
+                        }, 300);
+                return false;
+            }
+        });
 
         generateInitialListView();
     }
@@ -100,6 +116,7 @@ public class ChatActivity extends AppCompatActivity {
             mAdapter = new MsgListAdapter(ChatActivity.this, msgList);
             mMsgList = msgList;
             mListView.setAdapter(mAdapter);
+            scrollMyListViewToBottom();
         } catch(Exception e) {
             return;
         }
@@ -155,10 +172,12 @@ public class ChatActivity extends AppCompatActivity {
         mMsgList.add(getMsgItemData(msg, user.getUserName(), user.getUserId(), "me", user.getProfilePicUri()));
         mAdapter.setItems(mMsgList);
         mAdapter.notifyDataSetChanged();
+        scrollMyListViewToBottom();
 
         // 서버로 메시지 전송
         GMMMessenger messenger = new GMMMessenger();
         messenger.sendTextMessage(MsgServerConfig.CHAT_ROOM_ID, msg);
+
     }
 
     /**
@@ -181,6 +200,7 @@ public class ChatActivity extends AppCompatActivity {
                     mMsgList.add(newMsg);
                     mAdapter.setItems(mMsgList);
                     mAdapter.notifyDataSetChanged();
+                    scrollMyListViewToBottom();
                 }
             });
         }
@@ -218,5 +238,16 @@ public class ChatActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void scrollMyListViewToBottom() {
+        if (mListView == null || mAdapter == null) return;
+        mListView.post(new Runnable() {
+            @Override
+            public void run() {
+                // Select the last row so it will scroll into view...
+                mListView.setSelection(mAdapter.getCount() - 1);
+            }
+        });
     }
 }
