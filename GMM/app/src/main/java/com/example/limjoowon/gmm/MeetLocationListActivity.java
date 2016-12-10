@@ -54,7 +54,7 @@ public class MeetLocationListActivity extends AppCompatActivity {
      * Intent를 통해서 기본적인 정보를 받아옴
      */
     private void getBaseInfo() {
-        mBuilding = "N1";
+        mBuilding = getIntent().getExtras().getString("LocationOfBuilding");
         mUri = mUri.replace("{building}", mBuilding);
         getTimeInfo();
     }
@@ -86,7 +86,6 @@ public class MeetLocationListActivity extends AppCompatActivity {
                     JSONObject object = new JSONObject(result);
                     String time_info = object.getString("time");
                     processTime(time_info);
-                    //processTime("0000000000000000030000003000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
                 } catch (Exception e) {
                 }
             }

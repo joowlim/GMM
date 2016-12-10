@@ -111,7 +111,7 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
             case R.id.set_my_location:
                 if (myLocMarker == null) {
                     myLocMarker = googleMap.addMarker(new MarkerOptions()
-                            .position(E3)
+                            .position(N1)
                             .draggable(true)
                             .icon(BitmapDescriptorFactory.defaultMarker(5)));
                 }
@@ -127,19 +127,53 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
                                 myLocMarker.getPosition().latitude, myLocMarker.getPosition().longitude, onSendLocResponse);
                         Log.v("refresh",myLocMarker.getPosition().latitude+", "+myLocMarker.getPosition().longitude);
                     }
-                    Thread.sleep(200);
-                    LocationManager.getAllLocationInfo("abcd", onGetLocResponse);
-                    googleMap.clear();
-                    Thread.sleep(200);
-                    updateMarkers();
+                    Thread.sleep(300);
+
+
                    break;
                 } catch(InterruptedException e) {}
             case R.id.recommend:
+                moveToMeetLocationList();
+                /*
                 Intent i = new Intent(location.this, MeetLocationListActivity.class);
                 startActivity(i);
+                */
                 break;
         }
+    }
 
+    /**
+     * 만남 장소 목록 화면으로 이동
+     */
+    private void moveToMeetLocationList() {
+        Intent intent = new Intent(location.this, MeetLocationListActivity.class);
+        int len;
+        double N1diff = 0.0, E3diff = 0.0;
+
+        len = groupLocMarkers.length;
+        for(int i=0; i<len; i++) {
+            LatLng currLatLng = new LatLng(groupLocMarkers[i][0], groupLocMarkers[i][1]);
+            N1diff += getDist(currLatLng,N1);
+            E3diff += getDist(currLatLng,E3);
+        }
+
+        String location = "N1";
+        if (E3diff < N1diff) {
+            location = "E3";
+        }
+
+        intent.putExtra("LocationOfBuilding", location);
+        startActivity(intent);
+    }
+
+    /**
+     * 두 점 사이의 거리를 구한다.
+     */
+    private double getDist(LatLng d1, LatLng d2) {
+        double latDiff = Math.abs((d1.latitude*100) - (d2.latitude*100));
+        double lngDiff = Math.abs((d1.longitude*100) - (d2.longitude*100));
+
+        return Math.sqrt( Math.pow(latDiff,2) + Math.pow(lngDiff,2));
     }
 
     public void updateMarkers(){
@@ -172,12 +206,7 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
             try {
                 String result = response.body().string();
                 JSONObject object = new JSONObject(result);
-                runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(location.this, "내 장소를 업데이트 하였습니다", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                LocationManager.getAllLocationInfo("abcd", onGetLocResponse);
             } catch(Exception e) {
             }
         }
@@ -221,6 +250,15 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
                     Log.d("getLoc l", ""+Jarray.getJSONObject(0).getDouble("pos_lat"));
                     Log.d("getLoc m", ""+groupLocMarkers[0][0]);
                 }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(location.this, "내 장소를 업데이트 하였습니다", Toast.LENGTH_SHORT).show();
+                        googleMap.clear();
+                        updateMarkers();
+                    }
+                });
 
             } catch(Exception e) {
                 Log.d("getLoc", e.getMessage());

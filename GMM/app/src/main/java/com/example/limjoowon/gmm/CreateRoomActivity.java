@@ -133,7 +133,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(CreateRoomActivity.this, "해당 아이디를 가진 사용자는 없습니다.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CreateRoomActivity.this, "해당 아이디를 가진 사용자는 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 else
@@ -142,7 +142,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                         public void run() {
                             mTotalUser++;
                             String userTxt = userId + "(" + userName + ")";
-                            Toast.makeText(CreateRoomActivity.this, "사용자 " + userTxt + "님을 추가하셨습니다.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CreateRoomActivity.this, "사용자 " + userTxt + "님을 추가하셨습니다.", Toast.LENGTH_SHORT).show();
                             TextView userTextView = getCurrUserText();
                             userTextView.setText(userTxt);
                             userTextView.setVisibility(View.VISIBLE);
