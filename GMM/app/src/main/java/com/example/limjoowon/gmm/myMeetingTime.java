@@ -25,6 +25,7 @@ public class myMeetingTime extends Activity{
     GridView GridSchedule;
     TimeAdapter timeAdapter;
     int[][] timeTable=new int[16][7];
+    long timeSent = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class myMeetingTime extends Activity{
                     public void onClick(View view) {
                         //timeTable=timeAdapter.getTimeInfo();
                         String time_info = timeInfoToString(timeTable);
+                        timeSent = System.currentTimeMillis();
                         TimeManager.sendTimeInfo("abcd", "3", time_info, onSendTimeResponse);
                     }
                 }
@@ -97,6 +99,7 @@ public class myMeetingTime extends Activity{
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            long times = System.currentTimeMillis() - timeSent;
                             Toast.makeText(myMeetingTime.this, "내 시간을 업데이트 하였습니다", Toast.LENGTH_SHORT).show();
                             finish();
                         }

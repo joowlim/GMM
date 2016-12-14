@@ -1,12 +1,21 @@
 package com.example.limjoowon.gmm.module;
 
 import android.content.SharedPreferences;
+import android.os.Environment;
+import android.util.Log;
 
 import com.example.limjoowon.gmm.GMMApplication;
 import com.example.limjoowon.gmm.config.MsgServerConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.text.Collator;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -51,7 +60,7 @@ public class LocalChatDataManager {
      * @param msg 메시지
      * @return 실패하면 false 반환
      */
-    public boolean saveNewMessage(String chatRoomId, String sender, String googleId, String name, String profile, String msg) {
+    public boolean saveNewMessage(String chatRoomId, String sender, String googleId, String name, String profile, String msg, long time, long time_get) {
         //TODO: 지금은 하드코딩. 추후에 실제 chatRoomId로 변경
         chatRoomId = MsgServerConfig.CHAT_ROOM_ID;
 
@@ -69,6 +78,8 @@ public class LocalChatDataManager {
             obj.put(MsgServerConfig.KEY_SENDER_GOOGLE, googleId);
             obj.put(MsgServerConfig.KEY_SENDER_NAME, name);
             obj.put(MsgServerConfig.KEY_SENDER_PROFILE_URI, profile);
+            obj.put(MsgServerConfig.KEY_MSG_TIME, time);
+            obj.put(MsgServerConfig.KEY_MSG_GET_TIME, time_get);
             array.put(obj);
 
             String newStr = array.toString();
@@ -108,10 +119,66 @@ public class LocalChatDataManager {
         try {
             if (!str.isEmpty()) {
                 array = new JSONArray(str);
+
+                JSONObject [] newarray  = new JSONObject[array.length()];
+                int length = newarray.length;
+                for(int i = 0; i<length; i++) {
+                    newarray[i] = (JSONObject)array.get(i);
+                }
+                for(int i = 0; i<length-1; i++) {
+                    int index = 0;
+                    long min = -1;
+                    for(int j=i; j<length; j++) {
+                        long time = newarray[j].getLong(MsgServerConfig.KEY_MSG_TIME);
+                        if (min == -1 || time < min) {
+                            min = time;
+                            index = j;
+                        }
+                    }
+                    if ( i != index ) {
+                        JSONObject temp = newarray[index];
+                        newarray[index] = newarray[i];
+                        newarray[i] = temp;
+                    }
+                }
+                array = new JSONArray();
+                for(int i=0;i<length;i++) {
+                    array.put(newarray[i]);
+                }
+                printLog(array);
             }
         } catch(Exception e) {
         } finally {
             return array;
+        }
+    }
+
+    public void printLog(JSONArray array) {
+        String dirPath = Environment.getExternalStorageDirectory().getPath() + "/GMM";
+        File dir = new File(dirPath);
+        boolean result;
+        if (!dir.exists()) {
+            result = dir.mkdirs();
+        }
+
+        String path = dirPath + "/log.txt";
+
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(path));
+            for(int i = 0; i < array.length(); i++) {
+                String s = "";
+                JSONObject obj = (JSONObject)array.get(i);
+                s = String.format("msg,%s,received_time,%s",
+                        obj.getString(MsgServerConfig.KEY_MSG),
+                        Long.toString(obj.getLong(MsgServerConfig.KEY_MSG_GET_TIME)));
+                Log.i("[ClientMsg]",s);
+                out.write(s);
+                out.newLine();
+            }
+            out.close();
+        } catch (Exception e) {
+            int debug;
+            debug = 1;
         }
     }
 

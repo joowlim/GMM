@@ -163,9 +163,10 @@ public class ChatActivity extends AppCompatActivity {
         mEditText.setText("");
 
         UserConfig user = UserConfig.getInstance();
+        long time = System.currentTimeMillis();
         // 로컬에 새메시지 저장
         LocalChatDataManager.getInstance().saveNewMessage(
-                "", GMMApplication.getToken(), user.getUserId(), user.getUserName(), user.getProfilePicUri(), msg);
+                "", GMMApplication.getToken(), user.getUserId(), user.getUserName(), user.getProfilePicUri(), msg, time, time);
 
         // 리스트뷰에 새 메시지 추가
 

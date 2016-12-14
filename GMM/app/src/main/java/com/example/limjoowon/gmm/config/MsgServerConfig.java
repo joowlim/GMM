@@ -51,6 +51,16 @@ public class MsgServerConfig {
     public static String KEY_CHAT_ROOM_ID = "key_chat_room_id";
 
     /**
+     * 메시지가 생성된 시간
+     */
+    public static String KEY_MSG_TIME = "key_msg_time";
+
+    /**
+     * 메시지를 받은 시간
+     */
+    public static String KEY_MSG_GET_TIME = "key_msg_get_time";
+
+    /**
      * TODO: 하드코딩 CHAT_ROOM_ID 추후 제거
      */
     public static String CHAT_ROOM_ID = "chat_room_id";

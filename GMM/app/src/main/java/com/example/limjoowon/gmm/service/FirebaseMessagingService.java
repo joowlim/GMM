@@ -35,6 +35,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         String senderGoogle = "";
         String senderName = "";
         String senderProfile = "";
+        long time = 0;
 
         try {
             String jsonStr = remoteMessage.getData().get("message");
@@ -45,6 +46,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             senderName = obj.getString(MsgServerConfig.KEY_SENDER_NAME);
             senderProfile = obj.getString(MsgServerConfig.KEY_SENDER_PROFILE_URI);
             chatRoomId = obj.getString(MsgServerConfig.KEY_CHAT_ROOM_ID);
+            time = obj.getLong(MsgServerConfig.KEY_MSG_TIME);
 
             // 새채팅방 생성 메시지면 채팅방 이름 설정!
             if (msg.startsWith("**newChat**")) {
@@ -61,8 +63,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         } catch(Exception e) {
         }
+
+        long time_get = System.currentTimeMillis();
         // 로컬에 저장
-        LocalChatDataManager.getInstance().saveNewMessage(chatRoomId, senderId, senderGoogle, senderName, senderProfile, msg);
+        LocalChatDataManager.getInstance().saveNewMessage(chatRoomId, senderId, senderGoogle, senderName, senderProfile, msg, time, time_get);
 
         // 채팅화면이 활성화 상태이면 broadcast로 바로 메시지를 주고 아니면 Noti를 해준다.
         if (GMMApplication.isChatRoomInForeground()) {

@@ -40,6 +40,7 @@ public class GMMMessenger {
             obj.put(MsgServerConfig.KEY_SENDER_NAME, user.getUserName());
             obj.put(MsgServerConfig.KEY_SENDER_PROFILE_URI, user.getProfilePicUri());
             obj.put(MsgServerConfig.KEY_CHAT_ROOM_ID, chatRoomId);
+            obj.put(MsgServerConfig.KEY_MSG_TIME, System.currentTimeMillis());
 
             String json = obj.toString();
             RequestBody body = RequestBody.create(MsgServerConfig.MEDIATYPE_JSON, json);

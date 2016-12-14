@@ -42,6 +42,7 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
     Marker myLocMarker;
     //초기화는 서버 연결 안 됐을 때 죽지 말라고
     double[][] groupLocMarkers = {{KAIST.latitude, KAIST.longitude}, {N1.latitude, N1.longitude}, {E3.latitude, E3.longitude}};
+    long timeSent = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +124,7 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
             case R.id.loc_refresh:
                 try {
                     if (myLocMarker != null) {
+                        timeSent = System.currentTimeMillis();
                         LocationManager.sendLocationInfo("abcd", UserConfig.getInstance().getUserId(),
                                 myLocMarker.getPosition().latitude, myLocMarker.getPosition().longitude, onSendLocResponse);
                         Log.v("refresh",myLocMarker.getPosition().latitude+", "+myLocMarker.getPosition().longitude);
@@ -254,6 +256,7 @@ public class location extends AppCompatActivity implements OnMapReadyCallback, V
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        Log.i("[Location API]",Long.toString(System.currentTimeMillis()-timeSent));
                         Toast.makeText(location.this, "내 장소를 업데이트 하였습니다", Toast.LENGTH_SHORT).show();
                         googleMap.clear();
                         updateMarkers();

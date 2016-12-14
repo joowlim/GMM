@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.limjoowon.gmm.config.MsgServerConfig;
 import com.example.limjoowon.gmm.module.GMMServerCommunicator;
@@ -19,6 +20,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -51,6 +60,49 @@ public class MainActivity extends AppCompatActivity{
 
         // ListView 아이템 터치 시 이벤트 추가
         m_ListView.setOnItemClickListener(onClickListItem);
+        m_ListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                LocalChatDataManager.getInstance().clearChat();
+                LocalChatDataManager.getInstance().setRoomName(" ");
+                initList();
+                OkHttpClient client = new OkHttpClient();
+                String url = "http://143.248.49.55:8888/time/clear";
+                Request request = new Request.Builder().url(url).build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this, "완료!", Toast.LENGTH_SHORT);
+                            }
+                        });
+                    }
+                });
+
+                OkHttpClient client2 = new OkHttpClient();
+                String url2 = "http://143.248.49.55:8080/position/clear";
+                Request request2 = new Request.Builder().url(url2).build();
+                client2.newCall(request2).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+
+                    }
+                });
+                return true;
+            }
+        });
 
         // ListView에 아이템 추가
         res = getResources();
@@ -71,11 +123,15 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        initList();
+    }
+
+    private void initList() {
         m_Adapter.removeItem(0);
 
         Drawable image = res.getDrawable(R.mipmap.ceaser);
         String chatName = LocalChatDataManager.getInstance().getRoomName();
-        String lastMessage = ":)";
+        String lastMessage = "아래의 추가 버튼을 클릭하여 새 채팅방을 만들어주세요.";
         try {
             JSONArray array = LocalChatDataManager.getInstance().getAllMessage("");
             if (array == null || array.length() == 0) {
